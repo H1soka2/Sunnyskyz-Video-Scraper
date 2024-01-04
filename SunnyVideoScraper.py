@@ -20,8 +20,7 @@ class FetchVideo:
         # Method to edit video using CanvaBot, returns True if successful, False otherwise
         if not self.canva_bot.change_video_text(text=text):
             return False
-        if not self.canva_bot.change_video(video_path=video, foldername=videoid):
-            return False
+        return self.canva_bot.change_video(video_path=video, foldername=videoid):
 
     def fetch_video(self) -> bool:
         # Method to fetch videos
@@ -79,10 +78,12 @@ class FetchVideo:
                     parsed_data[jsondata_index] = failed_to_download
 
                     # Edit the video using CanvaBot
-                    if not self.editvideo(
+                    edit_video = self.editvideo(
                         video    = redownload[2],
                         text     = failed_to_download['StoryTitle'],
-                        videoid = str(videoid)):
+                        videoid = str(videoid))
+                    if not edit_video:
+                        print("Error while editing a video")
                         return False
 
                     # Check if the process should stop
@@ -127,11 +128,14 @@ class FetchVideo:
 
             # If the video is downloaded, edit and upload it using CanvaBot
             if json_hp['Status'] == "Downloaded":
-                if not self.editvideo(
+                edit_video = self.editvideo(
                     video    = tiktok_video_status[2], 
                     text     = json_hp['StoryTitle'], 
-                    videoid = str(videoid)):
+                    videoid = str(videoid))
+                if not edit_video:
+                    print("Error While editing a video")
                     return False
+                
 
             # Get file download link and update json data
             json_hp["DownloadManuallyDrive"] = None
